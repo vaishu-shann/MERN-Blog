@@ -10,40 +10,33 @@ export default function LoginPage() {
     const {setUserInfo} = useContext(UserContext);
 
 
-    const login = async (ev) => {
+    const login = async (event) => {
+        event.preventDefault()
         const config = {
           body: JSON.stringify({ username, password }),
           headers: {
             "Content-Type": "application/json",
           },
           method: "POST",
-          credentials: 'include',
         };
-        try {
-          debugger
-          const response = await fetch("http://localhost:5001/api/users/login", config);
-          debugger
-          console.log("response", response)
-          debugger
-          let result = await response.json();
-          debugger
-          console.log("login success", result);
-          debugger
+        try {          
+          const response = await fetch("http://127.0.0.1:5001/api/users/login", config);          
+          console.log("response", response)          
+          let result = await response.json();          
+          console.log("login success", result);          
           return result;
         } catch (err) {
           console.log(err, "error");
           return false;
         }
       };
-
- 
     
     if (redirect) {
         return <Navigate to={'/'} />
     }
 
     return (
-        <form className="login" onSubmit={login}>
+        <div className="login" >
             <h1>Login</h1>
             <input type="text"
                 placeholder="username"
@@ -53,7 +46,7 @@ export default function LoginPage() {
                 placeholder="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)} />
-            <button>Login</button>
-        </form>
+            <button onClick={login}>Login</button>
+        </div>
     );
 }

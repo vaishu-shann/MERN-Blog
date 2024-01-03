@@ -46,7 +46,7 @@ const loginUser = asyncHandler(async (req, res) => {
     if (passOk) {
         jwt.sign({ username, id: userDoc._id }, process.env.ACCESS_TOKEN_SECERT, {}, (err, token) => {
             if (err) throw err;
-            res.cookie('token', token).json({
+            res.status(200).json({
                 id: userDoc._id,
                 username,
                 authorization: token

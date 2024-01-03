@@ -9,7 +9,8 @@ export default function RegisterPage() {
   let URL = config.BACKEND_USER_BASE_URL;
 
 
-   const register = async (ev) => {
+   const register = async (event) => {
+    event.preventDefault()
     const config = {
       body: JSON.stringify({ username, password }),
       headers: {
@@ -18,15 +19,10 @@ export default function RegisterPage() {
       method: "POST",
     };
     try {
-      debugger
       const response = await fetch(URL+"register", config);
-      debugger
       console.log("response", response)
-      debugger
       let result = await response.json();
-      debugger
       console.log("registration success", result);
-      debugger
       return result;
     } catch (err) {
       console.log(err, "error");
@@ -39,7 +35,7 @@ export default function RegisterPage() {
     return <Navigate to={'/'} />
 }
   return (
-    <form className="register" onSubmit={register}>
+    <div className="register" >
       <h1>Register</h1>
       <input type="text"
         placeholder="username"
@@ -49,7 +45,7 @@ export default function RegisterPage() {
         placeholder="password"
         value={password}
         onChange={e => setPassword(e.target.value)} />
-      <button>Register</button>
-    </form>
+      <button onClick={register}>Register</button>
+    </div>
   );
 }
