@@ -44,12 +44,10 @@ const loginUser = asyncHandler(async (req, res) => {
     const userDoc = await User.findOne({ username });
     const passOk = bcrypt.compareSync(password, userDoc.password);
     if (passOk) {
-        jwt.sign({ username, id: userDoc._id }, process.env.ACCESS_TOKEN_SECERT, {}, (err, token) => {
+        jwt.sign({ user:{username, id: userDoc._id }}, process.env.ACCESS_TOKEN_SECERT, { expiresIn: "45m" }, (err, token) => {
             if (err) throw err;
             res.status(200).json({
-                id: userDoc._id,
-                username,
-                authorization: token
+                token
             });
         });
     } else {
@@ -57,9 +55,9 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 });
 
+const currentUser = asyncHandler(async (req, res) => {
+    res.json(req.user);
+  });
 
 
-
-
-
-module.exports = { registerUser, loginUser };
+module.exports = { registerUser, loginUser,currentUser };
