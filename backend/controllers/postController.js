@@ -22,31 +22,31 @@ const createBlog = asyncHandler(async (req, res) => {
         title,
         summary,
         content,
+       
     });
-
     res.status(201).json(postDoc);
 }
 )
 
-
 const getBlogById = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const postDoc = await Post.findById(id).populate('author', ['username']);
-    res.json(postDoc);
+    res.status(200).json(postDoc);
 }
 
 )
 
-
-
 const editBlog = asyncHandler(async (req, res) => {
-    const { title, summary, content } = req.body;
+    console.log("edit Blog" , req.body)
+    const { id,title, summary, content } = req.body;
+    const postDoc = await Post.findById(id);
+    console.log("postDoc" ,postDoc)
     await postDoc.update({
         title,
         summary,
         content,
     });
-    res.json(postDoc);
+    res.status(200).json(postDoc);
 })
 
 

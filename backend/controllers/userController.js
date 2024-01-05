@@ -44,7 +44,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const userDoc = await User.findOne({ username });
     const passOk = bcrypt.compareSync(password, userDoc.password);
     if (passOk) {
-        jwt.sign({ user:{username, id: userDoc._id }}, process.env.ACCESS_TOKEN_SECERT, { expiresIn: "45m" }, (err, token) => {
+        jwt.sign({ user:{username, id: userDoc._id }}, process.env.ACCESS_TOKEN_SECERT, {  }, (err, token) => {
             if (err) throw err;
             res.status(200).json({
                 token
