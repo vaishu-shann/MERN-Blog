@@ -1,18 +1,47 @@
-import { useState} from "react";
+import {useContext, useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+// import {formatISO9075} from "date-fns";
+import {UserContext} from "../context/UserContext";
 import {Link} from 'react-router-dom';
 
 export default function PostPage() {
-  const [postInfo,setPostInfo] = useState({ _id: 1, title: "You can connect to MongoDB with the mongoose.connect() method.", author: { username: "Umang" }, content: "This is the minimum needed to connect the myapp database running locally on the default port (27017). For local MongoDB databases, we recommend using 127.0.0.1 instead of localhost. That is because Node.js 18 and up prefer IPv6 addresses, which means, on many machines, "});
+  const [postInfo,setPostInfo] = useState(null);
+  const {userInfo} = useContext(UserContext);
+  const {id} = useParams();
+  let auth_token = localStorage.getItem("auth")
 
+const getPostsbyId = async() =>{
+    const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: auth_token,
+        },
+        method: "GET",
+      };
+    try{
+        const response = await fetch(`http://localhost:5001/api/posts/${id}`,config)
+        let result = await response.json();
+        console.log("result", result);
+        setPostInfo(result);
 
+    }catch(e){
+        console.log("error in fetching post", e)
+        return false
+    }
+}
+
+  useEffect(() => {
+   getPostsbyId();
+  }, []);
 
   if (!postInfo) return '';
 
   return (
     <div className="post-page">
       <h1>{postInfo.title}</h1>
+      <time>Random Date </time>
       <div className="author">by @{postInfo.author.username}</div>
-   
+      {userInfo.id === postInfo.author._id && (
         <div className="edit-row">
           <Link className="edit-btn" to={`/edit/${postInfo._id}`}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -21,9 +50,9 @@ export default function PostPage() {
             Edit this post
           </Link>
         </div>
-    
+      )}
       <div className="image">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9JA3u5Unx3T-w4xp5MttlBzprpOoyr4JhYA&usqp=CAU" alt=""/>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9JA3u5Unx3T-w4xp5MttlBzprpOoyr4JhYA&usqp=CAU"  alt=""/>
       </div>
       <div className="content" dangerouslySetInnerHTML={{__html:postInfo.content}} />
     </div>

@@ -24,7 +24,7 @@ export default function EditPost() {
   }
 
   return (
-    <form onSubmit={updatePost}>
+    <div >
       <input type="title"
              placeholder={'Title'}
              value={title}
@@ -36,7 +36,7 @@ export default function EditPost() {
       <input type="file"
              onChange={ev => setFiles(ev.target.files)} />
       <Editor onChange={setContent} value={content} />
-      <button style={{marginTop:'5px'}}>Update post</button>
-    </form>
+      <button style={{marginTop:'5px'}}  onClick={updatePost}>Update post</button>
+    </div>
   );
 }
