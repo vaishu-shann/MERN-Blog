@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const navigate = useNavigate()
   const [username, setUsername] = useState("Vaishu")
+  let auth_token = localStorage.getItem("auth")
 
-  useEffect(() => {
-    setUsername("Vaishu")
-  }, [])
+
 
   function logout() {
-    setUsername(null)
+   localStorage.clear();
+   navigate("/login")
   }
 
 
@@ -17,13 +18,13 @@ export default function Header() {
     <header>
       <Link to="/" className="logo">MyBlog</Link>
       <nav>
-        {username && (
+        {auth_token && (
           <>
             <Link to="/create">Create new post</Link>
-            <a onClick={logout}>Logout ({username})</a>
+            <a onClick={logout}>Logout </a>
           </>
         )}
-        {!username && (
+        {!auth_token && (
           <>
             <Link to="/login">Login</Link>
             <Link to="/register">Register</Link>
