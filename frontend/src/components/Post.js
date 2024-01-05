@@ -14,10 +14,11 @@ export default function Post({_id,title,summary,cover,content,createdAt,author})
         <Link to={`/post/${_id}`}>
         <h2>{title}</h2>
         </Link>
-        <p className="info">
+        {/* <p className="info">
           <a className="author">{author.username}</a>
-        </p>
-        <p className="summary">{summary}</p>
+        </p> */}
+         <p className="info">{summary}</p>
+        <p className="summary">{content}</p>
       </div>
     </div>
   );

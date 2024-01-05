@@ -4,20 +4,66 @@ import Editor from "../components/Editor";
 
 export default function EditPost() {
   const {id} = useParams();
-  const [title,setTitle] = useState('You can connect to MongoDB with the mongoose.connect() method');
-  const [summary,setSummary] = useState('This is the minimum needed to connect the myapp database running locally on the default port (27017). For local MongoDB databases, we recommend using 127.0.0.1 instead of localhost. That is because Node.js 18 and up prefer IPv6 addresses, which means, on many machines');
-  const [content,setContent] = useState('This is the minimum needed to connect the myapp database running locally on the default port (27017). That is because Node.js 18 and up prefer IPv6 addresses, which means, on many machines');
+  const [title,setTitle] = useState('');
+  const [summary,setSummary] = useState('');
+  const [content,setContent] = useState('');
   const [files, setFiles] = useState('');
   const [redirect,setRedirect] = useState(false);
+  let auth_token = localStorage.getItem("auth")
 
+  const getPostsbyId = async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${auth_token}`,
+      },
+      method: "GET",
+    };
+    try {
+      const response = await fetch(`http://localhost:5001/api/posts/${id}`, config)
+      let postInfo = await response.json();
+      console.log("postInfo", postInfo);
+      if (postInfo  ) {       
+        setTitle(postInfo.title);
+        setContent(postInfo.content);
+        setSummary(postInfo.summary);
+      }
 
-
-  async function updatePost(ev) {
-    ev.preventDefault();
-  
-      setRedirect(true);
-    
+    } catch (e) {
+      console.log("error in fetching post", e)
+      return false
+    }
   }
+
+  useEffect(() => {
+    getPostsbyId()
+  }, [auth_token]);
+
+
+  const updatePost = async() => {
+    try{
+      let data = {
+        title,
+        summary,
+        content,
+        id,
+      }
+      const response = await fetch('http://localhost:5001/api/posts', {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        Authorization: auth_token,
+      });
+      let result = await response.json();
+      console.log("result", result)
+      if (response.ok) {
+        setRedirect(true);
+      }
+    }catch(e){
+      console.log("error in update post" , e);
+      return false;
+    }
+  }
+
 
   if (redirect) {
     return <Navigate to={'/post/'+id} />

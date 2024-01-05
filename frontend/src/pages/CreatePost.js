@@ -28,9 +28,9 @@ export default function CreatePost() {
       });
       let result = await response.json();
       console.log("result", result)
-      // if (response.ok) {
-      //   setRedirect(true);
-      // }
+      if (response.ok) {
+        setRedirect(true);
+      }
     } catch (e) {
       console.log("error in creating post", e)
       return false;

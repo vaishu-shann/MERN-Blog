@@ -25,6 +25,7 @@ export default function LoginPage() {
           let result = await response.json();          
           console.log("login success", result);          
           localStorage.setItem("auth", result.token)
+          setRedirect(true)
           return result;
         } catch (err) {
           console.log(err, "error");
