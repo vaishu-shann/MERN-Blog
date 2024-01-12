@@ -15,7 +15,7 @@ export default function EditPost() {
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${auth_token}`,
+        // Authorization: `Bearer ${auth_token}`,
       },
       method: "GET",
     };
@@ -51,7 +51,7 @@ export default function EditPost() {
       const response = await fetch('http://localhost:5001/api/posts', {
         method: 'PUT',
         body: JSON.stringify(data),
-        Authorization: auth_token,
+        // Authorization: auth_token,
       });
       let result = await response.json();
       console.log("result", result)

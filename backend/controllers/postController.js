@@ -1,6 +1,28 @@
 const asyncHandler = require("express-async-handler");
 const Post = require("../models/postModel")
+// const multer = require('multer');
+// const uploadMiddleware = multer({ dest: 'uploads/' });
 const fs = require('fs');
+const path = require('path')
+
+
+const assetsFolder = path.join(__dirname, '..', 'assets');
+
+
+const uploadImage = asyncHandler(async (req, res) => {
+    console.log("req.file", req.files)
+    console.log("path", path)
+    console.log("assetsFolder", assetsFolder)
+    const { avatar } = req.files;
+    try {
+        console.log("Full path:", path.join(assetsFolder, avatar.name));
+        avatar.mv(path.join(assetsFolder, avatar.name));
+        res.status(200).json({avatar })
+    } catch (e) {
+        res.status(500).json({ message: e })
+    }
+}
+)
 
 
 const getBlog = asyncHandler(async (req, res) => {
@@ -12,19 +34,29 @@ const getBlog = asyncHandler(async (req, res) => {
     );
 })
 
+
+
 const createBlog = asyncHandler(async (req, res) => {
-    const { title, summary, content } = req.body;
-    if (!title || !summary) {
-        res.status(400);
-        throw new Error("Name and Summary fileds are mandatory");
+    console.log("createblog", req.body)
+    const { title, summary, content, cover} = req.body;
+    try{
+        if (!title || !summary) {
+            res.status(400);
+            throw new Error("Title and Summary fileds are mandatory");
+        }
+        const postDoc = await Post.create({
+            title,
+            summary,
+            content,
+            cover,
+        });
+        console.log("postDoc" ,postDoc)
+        res.status(201).json(postDoc);
+    }catch(e){
+        console.log("error in create Blog", e)
+        res.status(500).json({ message: e })
     }
-    const postDoc = await Post.create({
-        title,
-        summary,
-        content,
-       
-    });
-    res.status(201).json(postDoc);
+
 }
 )
 
@@ -37,16 +69,22 @@ const getBlogById = asyncHandler(async (req, res) => {
 )
 
 const editBlog = asyncHandler(async (req, res) => {
-    console.log("edit Blog" , req.body)
-    const { id,title, summary, content } = req.body;
-    const postDoc = await Post.findById(id);
-    console.log("postDoc" ,postDoc)
-    await postDoc.update({
-        title,
-        summary,
-        content,
-    });
-    res.status(200).json(postDoc);
+    console.log("edit Blog", req.body)
+    try{
+        const { id, title, summary, content } = req.body;
+        const postDoc = await Post.findById(id);
+        console.log("postDoc", postDoc)
+        await postDoc.update({
+            title,
+            summary,
+            content,
+        });
+        res.status(200).json(postDoc);
+    }catch(e){
+        console.log("error in edit Blog", e)
+        res.status(500).json({ message: e })
+    }
+ 
 })
 
 
@@ -54,5 +92,6 @@ module.exports = {
     createBlog,
     getBlog,
     getBlogById,
-    editBlog
+    editBlog,
+    uploadImage
 };
